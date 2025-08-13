@@ -1,0 +1,321 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LumaQuest – v7.3.9-fix</title><meta name="theme-color" content="#131425">
+<style>
+:root{--bg:#111327;--fg:#eaf2ff;--mut:#a7b3c6;--c1:#1c1f3b;--c2:#241f4b;--glass:rgba(255,255,255,.08);
+--ok:#29ffa5;--warn:#ffd75a;--mid:#ff9a5c;--bad:#ff5d5d;--safeT:env(safe-area-inset-top,0);--safeB:env(safe-area-inset-bottom,0)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);
+font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;overflow:hidden}
+/* header */
+.header{position:sticky;top:0;z-index:6;padding:calc(10px + var(--safeT)) 14px 12px;
+display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+background:linear-gradient(180deg,rgba(10,15,24,.9),rgba(10,15,24,.55));backdrop-filter:blur(10px);
+border-bottom:1px solid rgba(255,255,255,.08)}
+#btnBack{display:none;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.16);
+background:rgba(255,255,255,.06);color:var(--fg);font-weight:900}
+.title{font-size:22px;font-weight:1000;background:linear-gradient(90deg,#ff7cc8,#9a7bff,#9bd4ff,#ffd48a);
+-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.2px}
+#eloBadge{justify-self:end;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);font-size:12px;font-weight:900;display:flex;gap:6px;align-items:center}
+/* main footer */
+main{position:relative;height:calc(100% - 110px);overflow:auto;padding:14px 14px calc(70px + var(--safeB));-webkit-overflow-scrolling:touch}
+footer{position:fixed;left:0;right:0;bottom:0;height:54px;padding:0 12px var(--safeB);display:flex;align-items:center;justify-content:center;z-index:7;
+background:linear-gradient(180deg,rgba(10,15,24,0),rgba(10,15,24,.95));border-top:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px)}
+#quote{font-size:13px;color:#cfe5ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96vw}
+/* particles */
+#p{position:fixed;inset:0;z-index:0;opacity:.55;pointer-events:none}
+/* cards */
+.card{background:linear-gradient(180deg,var(--c1),var(--c2));border:1px solid rgba(255,255,255,.08);
+border-radius:22px;padding:16px;box-shadow:0 20px 42px rgba(0,0,0,.42);margin-bottom:16px}
+.card h2,.card h3{margin:0 0 8px}
+.view{display:none}.view.active{display:block}
+/* home grid */
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:10px}
+.round{aspect-ratio:1/1;border-radius:26px;display:grid;place-items:center;text-align:center;font-weight:900;color:var(--fg);
+border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+box-shadow:inset 0 0 50px rgba(47,209,255,.14),0 16px 30px rgba(0,0,0,.45);transition:transform .18s ease}
+.round:active{transform:scale(.98)}.round .icon{width:42px;height:42px;margin-bottom:6px}.sub{font-size:12px;color:#bcd1ea}
+/* form */
+.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:13px;color:#b8c5db}
+.field input,.field select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:12px 14px;color:var(--fg);outline:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}.btn{border-radius:14px;padding:12px 14px;font-weight:900;border:1px solid rgba(255,255,255,.12);
+background:rgba(255,255,255,.10);color:var(--fg)}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:10px}.list li{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:14px;font-size:14px}
+.small{font-size:12px;color:#b8c5db}
+/* pills */
+.pill{padding:6px 10px;border-radius:9999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.10);font-weight:900;white-space:nowrap}
+.good{background:rgba(41,255,165,.22);border-color:rgba(41,255,165,.95);color:#d8ffe9}
+.warn{background:rgba(255,215,90,.22);border-color:rgba(255,215,90,.98);color:#fff0bd}
+.mid{background:rgba(255,154,92,.22);border-color:rgba(255,154,92,.98);color:#ffe0d6}
+.bad{background:rgba(255,93,93,.24);border-color:rgba(255,93,93,1);color:#ffd9d9}
+/* progress */
+.progress{height:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#ff7cc8,#9a7bff)}
+/* XP */
+#xpWrap{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:9999px;height:14px;overflow:hidden}
+#xpBar{height:100%;width:0;background:linear-gradient(90deg,#ff7cc8,#9a7bff)}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9}
+.modal.active{display:flex}.modal .box{background:linear-gradient(180deg,var(--c1),var(--c2));border:1px solid rgba(255,255,255,.1);
+border-radius:18px;padding:16px;width:min(560px,92vw)}
+/* quest chip with wrap */
+.quest{display:block;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);font-weight:900;white-space:normal;line-height:1.25}
+.quest.ok{background:rgba(41,255,165,.22);border-color:rgba(41,255,165,.95)}
+/* control-board rows */
+.cb{width:100%}.cb .row{display:grid;grid-template-columns:80px 80px 110px 1fr 120px 90px;gap:10px;align-items:center;padding:8px 10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:14px;margin-bottom:8px}
+@media (max-width:430px){.cb .row{grid-template-columns:70px 70px 90px 1fr 100px 82px}}
+.up{color:var(--ok);font-weight:900}.down{color:var(--bad);font-weight:900}.flat{color:#cfe5ff}
+/* trophies */
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ti{position:relative;border-radius:18px;padding:16px;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.ti.lock::after{content:"";position:absolute;inset:0;border-radius:18px;background:repeating-linear-gradient(135deg,rgba(0,0,0,.35),rgba(0,0,0,.35) 10px,rgba(0,0,0,0) 10px,rgba(0,0,0,0) 20px)}
+.ti .emoji{font-size:26px;display:block;margin-bottom:6px;opacity:.9}
+.ti small{display:block;color:#cfe5ff;opacity:.9}
+.r-common{color:#d8e9ff}.r-rare{color:#7ee3ff}.r-epic{color:#ffe28c}.r-myth{color:#ffd0f8}
+/* badge info grid */
+.bgrid{display:grid;gap:10px}
+</style></head><body>
+<canvas id="p"></canvas>
+<div class="header">
+  <button id="btnBack" onclick="nav('home')" aria-label="Zurück">←</button>
+  <div class="title">LumaQuest – Habit ELO</div>
+  <div id="eloBadge">ELO <span id="eloVal">1000</span> <span id="eloTrend">↔︎</span></div>
+</div>
+
+<main>
+<section id="home" class="view active">
+  <div class="grid2">
+    <button class="round" onclick="nav('track')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M4 18V6M9 18V10M14 18V4M19 18V12" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      <div class="sub">Tracking</div></button>
+    <button class="round" onclick="nav('stats')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16v4H4zM4 14h10v4H4z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      <div class="sub">Statistiken</div></button>
+    <button class="round" onclick="nav('trophies')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M7 4h10v3a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      <div class="sub">Trophäen</div></button>
+    <button class="round" onclick="nav('settings')">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2"/></svg>
+      <div class="sub">Einstellungen</div></button>
+  </div>
+  <div class="card"><h3>Level</h3><div id="xpWrap"><div id="xpBar"></div></div><div id="xpLabel" class="small">Level 1 · 0 / 100 XP</div></div>
+  <div class="card">
+    <h3>Daily Quest</h3>
+    <div id="dqDesc" style="font-weight:800;margin-bottom:6px">—</div>
+    <div class="small">Belohnung: <b id="dqReward">+25 XP</b></div>
+    <div style="height:8px"></div>
+    <div id="dqChip" class="quest">Offen</div>
+    <div class="small" style="margin-top:6px">Tippe auf den Badge im Tagesabschluss für <b>Badge-Infos</b>.</div>
+  </div>
+  <div class="card" id="miniToday"><h3>Heute</h3><div id="miniLine" style="font-weight:800;">—</div></div>
+  <div class="card"><button class="btn" onclick="nav('badgeinfo')">Badge-Infos anzeigen</button></div>
+</section>
+
+<section id="track" class="view">
+  <div class="card"><h2>Heutiges Tracking</h2>
+    <div class="field"><label for="cigs">Zigaretten</label>
+      <select id="cigs"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+        <option>7</option><option>8</option><option>9</option><option>10</option><option>12</option><option>15</option><option>20</option><option>25</option><option>30</option></select></div>
+    <div class="small">Schnell hinzufügen:</div>
+    <div class="row">
+      <button class="btn" data-drink='{"type":"radler","amount":0.5,"pct":2.5}'>+ Radler (0.5 L · 2.5%)</button>
+      <button class="btn" data-drink='{"type":"bier","amount":0.5,"pct":5}'>+ Bier (0.5 L · 5%)</button>
+      <button class="btn" data-drink='{"type":"wein","amount":0.2,"pct":12}'>+ Wein (0.2 L · 12%)</button>
+      <button class="btn" data-drink='{"type":"spirit","amount":0.02,"pct":40}'>+ Shot (0.02 L · 40%)</button>
+    </div>
+    <div class="small">Custom:</div>
+    <div class="row">
+      <div class="field" style="flex:1 1 120px"><label>Menge (L)</label><input id="alcAmount" type="number" step="0.01" min="0" placeholder="0.33"></div>
+      <div class="field" style="flex:1 1 120px"><label>% vol</label><input id="alcPct" type="number" step="0.1" min="0" max="100" placeholder="5.0"></div>
+      <div class="field" style="flex:1 1 150px"><label>Typ</label><select id="alcType"><option value="bier">Bier</option><option value="radler">Radler</option><option value="wein">Wein</option><option value="spirit">Hochprozentig</option><option value="custom">Custom</option></select></div>
+      <button class="btn" id="addDrinkBtn">Getränk hinzufügen</button>
+    </div>
+    <div class="small">Tages-Einheiten: <b id="unitsTotal">0.00</b> · Alkohol: <b id="gramsTotal">0.0 g</b></div>
+  </div>
+
+  <div class="card"><h3>Getränke heute</h3><ul id="drinkList" class="list"></ul></div>
+
+  <div class="card"><div class="row"><button class="btn" id="saveDayBtn">Tag speichern</button><button class="btn" id="finalizeBtn">Tagesabschluss</button><button class="btn" id="clearDrinksBtn">Alle Getränke löschen</button></div></div>
+
+  <div class="card">
+    <h3>Tages-Log</h3>
+    <div class="small" id="logHint">Vergleich ggü. deinen Ø-Werten (falls gesetzt).</div>
+    <div id="cbLog" class="cb"></div>
+  </div>
+</section>
+
+<section id="stats" class="view">
+  <div class="card"><h2>Tagesabschlüsse (Control Board)</h2>
+    <div class="cb" id="cbTable"></div>
+  </div>
+</section>
+
+<section id="trophies" class="view">
+  <div class="card"><h2>Trophäen</h2>
+    <div class="tgrid" id="trophyGrid"></div>
+    <div class="small">Tippe auf eine gesperrte Trophäe, um die Bedingungen zu sehen.</div>
+  </div>
+</section>
+
+<section id="badgeinfo" class="view">
+  <div class="card"><h2>Badge-Regeln (Info)</h2>
+    <div class="bgrid">
+      <div><span class="pill good">Zero Hero</span> <div class="small">0 Cigs & 0 Einheiten</div></div>
+      <div><span class="pill good">Strong Cut</span> <div class="small">≤2 Cigs & ≤1.0 Einheiten</div></div>
+      <div><span class="pill warn">Holding Line</span> <div class="small">≤3 Cigs & ≤2.5 Einheiten</div></div>
+      <div><span class="pill mid">Under Watch</span> <div class="small">≤5 Cigs & ≤3.5 Einheiten</div></div>
+      <div><span class="pill mid">Steady 10</span> <div class="small">≤10 Cigs & ≤4.5 Einheiten</div></div>
+      <div><span class="pill bad">Game Over</span> <div class="small">&gt;10 Cigs ODER &gt;4.5 Einheiten</div></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- Modal -->
+<div id="modal" class="modal" onclick="closeModal(event)"><div class="box" onclick="event.stopPropagation()"><h3 id="mTitle"></h3><div id="mBody">—</div><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeModal()">Schließen</button></div></div></div>
+
+<footer><span id="quote">—</span></footer>
+
+<script>
+/* ---------- State ---------- */
+const LS="lq_v739_fix";
+let S=JSON.parse(localStorage.getItem(LS)||'{"days":[],"elo":1000,"base":{"c":null,"u":null},"xp":0,"level":1,"dq":null,"trophies":{}}');
+function save(){localStorage.setItem(LS,JSON.stringify(S))}
+/* ---------- Helpers ---------- */
+const QTS=["Kleine Schritte. Große Richtung.","Heute zählst du.","Nicht perfekt. Konsequent.","Du brennst heller als jede Gewohnheit.","Ein leiser Sieg zählt.","Weniger Rauch, mehr Raum.","Du bist der Trend.","Reset ist Stärke."];
+document.getElementById("quote").textContent=QTS[new Date().getDate()%QTS.length];
+function today(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function curr(){const key=today();let d=S.days.find(x=>x.date===key);if(!d){d={date:key,cigs:0,drinks:[],finalized:false,badge:null,eloDelta:0};S.days.push(d)}if(!d.drinks)d.drinks=[];return d}
+const grams=dr=>Math.max(0,(+dr.amount||0)*1000*((+dr.pct||0)/100)*0.8);
+const sumU=arr=>arr.reduce((s,x)=>s+grams(x)/10,0);
+const sumG=arr=>arr.reduce((s,x)=>s+grams(x),0);
+const daysSorted=()=>S.days.slice().sort((a,b)=>a.date>b.date?1:-1);
+/* ---------- Particles ---------- */
+(function initP(){const c=document.getElementById('p'),x=c.getContext('2d');function R(){c.width=innerWidth;c.height=innerHeight}R();addEventListener('resize',R);
+let P=[...Array(90)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*2+0.6,life:120+Math.random()*240}));
+(function step(){x.clearRect(0,0,c.width,c.height);x.globalCompositeOperation="lighter";P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life-=.5;
+if(p.x<0)p.x+=c.width;if(p.x>c.width)p.x-=c.width;if(p.y<0)p.y+=c.height;if(p.y>c.height)p.y-=c.height;
+const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*6);g.addColorStop(0,"rgba(155,120,255,.8)");g.addColorStop(1,"rgba(255,80,180,0)");
+x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,p.r*3,0,Math.PI*2);x.fill();if(p.life<=0){p.x=Math.random()*c.width;p.y=Math.random()*c.height;p.life=200}});
+requestAnimationFrame(step)})();})();
+/* ---------- Header / XP ---------- */
+function upHeader(){document.getElementById("eloVal").textContent=S.elo||1000;const tr=(S.elo||1000)-(S.eloPrev??S.elo??1000);const t=document.getElementById("eloTrend");t.textContent=tr>0?"↑":tr<0?"↓":"↔︎";t.style.color=tr>0?"#2cffae":tr<0?"#ff6b6b":"#cfe5ff"}
+function addXP(n){S.xp+=n;while(S.xp>=100){S.xp-=100;S.level++}save();document.getElementById("xpBar").style.width=Math.min(100,Math.max(0,S.xp))+"%";document.getElementById("xpLabel").textContent=`Level ${S.level||1} · ${S.xp||0} / 100 XP`}
+/* ---------- Navigation ---------- */
+function nav(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");document.getElementById("btnBack").style.display=id!=="home"?"inline-flex":"none";
+if(id==="track"){renderDrinks();renderMini();renderLog()} if(id==="stats"){renderCB()} if(id==="trophies"){renderTrophies()}}
+/* ---------- Drinks (fixed binding) ---------- */
+function bindDrinkButtons(){document.querySelectorAll('#track [data-drink]').forEach(b=>b.onclick=()=>{const d=JSON.parse(b.dataset.drink);instant(d.type,d.amount,d.pct)})}
+bindDrinkButtons();
+document.getElementById("addDrinkBtn").onclick=()=>{const t=document.getElementById('alcType').value,a=parseFloat(document.getElementById('alcAmount').value||'0'),p=parseFloat(document.getElementById('alcPct').value||'0');if(!(a>0))return alert('Menge angeben.');instant(t,Math.min(5,Math.max(0,a)),Math.min(100,Math.max(0,p)));document.getElementById('alcAmount').value='';document.getElementById('alcPct').value=''};
+document.getElementById("saveDayBtn").onclick=saveDay;document.getElementById("finalizeBtn").onclick=finalizeDay;document.getElementById("clearDrinksBtn").onclick=clearDrinks;
+function instant(type,amount,pct){const d=curr();d.drinks.push({type,amount,pct});save();renderDrinks();renderMini();toast(`${labelDrink({type,amount,pct})} hinzugefügt`)}
+function labelDrink(dr){const m={radler:"Radler",bier:"Bier",wein:"Wein",spirit:"Hochprozentig",custom:"Custom"};return (m[dr.type]||dr.type)+" • "+(+dr.amount||0).toFixed(2)+" L @ "+(+dr.pct||0).toFixed(1)+"%"}
+function renderDrinks(){const d=curr(),ul=document.getElementById("drinkList");ul.innerHTML="";let u=0,g=0;const groups=new Map();d.drinks.forEach(dr=>{const key=[dr.type,(+dr.amount||0).toFixed(2),(+dr.pct||0).toFixed(1)].join("|");const ui=grams(dr)/10;u+=ui;g+=grams(dr);if(!groups.has(key))groups.set(key,{key,type:dr.type,amount:+dr.amount||0,pct:+dr.pct||0,count:0,units:0});const obj=groups.get(key);obj.count++;obj.units+=ui;});
+[...groups.values()].forEach(gr=>{const li=document.createElement("li");li.innerHTML=`<span>${labelDrink(gr)} • × ${gr.count}</span>
+<span class="small">${gr.units.toFixed(2)} Einh. <button class="btn" style="padding:6px 10px" onclick="removeOne('${gr.key}')">−1</button> <button class="btn" style="padding:6px 10px" onclick="removeAll('${gr.key}')">Alle</button></span>`;ul.appendChild(li)});
+document.getElementById("unitsTotal").textContent=u.toFixed(2);document.getElementById("gramsTotal").textContent=g.toFixed(1)+" g"}
+function removeOne(key){const d=curr();for(let i=d.drinks.length-1;i>=0;i--){const R=d.drinks[i];const k=[R.type,(+R.amount||0).toFixed(2),(+R.pct||0).toFixed(1)].join("|");if(k===key){d.drinks.splice(i,1);break}}save();renderDrinks();renderMini()}
+function removeAll(key){if(!confirm("Alle Getränke dieser Gruppe entfernen?"))return;const d=curr();for(let i=d.drinks.length-1;i>=0;i--){const R=d.drinks[i];const k=[R.type,(+R.amount||0).toFixed(2),(+R.pct||0).toFixed(1)].join("|");if(k===key){d.drinks.splice(i,1)}}save();renderDrinks();renderMini()}
+function clearDrinks(){if(!confirm('Alle Getränke heute löschen?'))return;const d=curr();d.drinks=[];save();renderDrinks();renderMini()}
+function saveDay(){const d=curr();d.cigs=+document.getElementById("cigs").value||0;save();renderLog();renderMini();toast("Gespeichert");addXP(5)}
+/* ---------- Badges / ELO ---------- */
+function badge(c,u){if(c===0&&u===0)return{id:"zero",name:"Zero Hero",cls:"good",desc:"0 Cigs & 0 Einheiten"};
+if(c<=2&&u<=1.0)return{id:"strong",name:"Strong Cut",cls:"good",desc:"≤2 Cigs & ≤1.0 Einheiten"};
+if(c<=3&&u<=2.5)return{id:"hold",name:"Holding Line",cls:"warn",desc:"≤3 Cigs & ≤2.5 Einheiten"};
+if(c<=5&&u<=3.5)return{id:"watch",name:"Under Watch",cls:"mid",desc:"≤5 Cigs & ≤3.5 Einheiten"};
+if(c<=10&&u<=4.5)return{id:"steady",name:"Steady 10",cls:"mid",desc:"≤10 Cigs & ≤4.5 Einheiten"};
+return{id:"over",name:"Game Over",cls:"bad",desc:">10 Cigs ODER >4.5 Einheiten"}}
+function eloExplain(c,u,b){const bc=S.base.c,bu=S.base.u;const pC=(bc&&bc>0)?Math.max(0,1-Math.min(1,c/bc)):(c===0?1:0);
+const pU=(bu&&bu>0)?Math.max(0,1-Math.min(1,u/bu)):(u===0?1:0);let score=.6*pC+.4*pU;let pen=0;if(c>=10)pen-=.2;if(u>=4.5)pen-=.2;score=Math.min(1,Math.max(0,score+pen));
+let K=28;if(b.id==="zero")K+=18;else if(b.cls==="good")K+=8;else if(b.cls==="bad")K+=6;let delta=Math.round(K*(score-.5));delta=Math.max(-60,Math.min(60,delta));
+return{score,K,delta,pC,pU}}
+/* ---------- Daily Quest ---------- */
+function ensureDQ(){if(S.dq && S.dq.date===today())return;S.dq=newDQ();save()}
+function seed(){const t=today().replace(/-/g,'');let h=0;for(let i=0;i<t.length;i++){h=(h*31+t.charCodeAt(i))>>>0}return h||1}
+function r01(){let s=seed();s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/4294967295}
+function pick(a){return a[Math.floor(r01()*a.length)]}
+function newDQ(){const ops=[
+{id:"cigs_max",xp:25,m:()=>{const t=pick([0,2,3,5]);return{desc:`Rauche ≤ ${t} Zigaretten`,test:d=>d.cigs<=t}}},
+{id:"units_max",xp:25,m:()=>{const t=pick([0,1.0,2.0,3.0]);return{desc:`Bleib bei ≤ ${t.toFixed(1)} Einheiten`,test:(d,u)=>u<=t}}},
+{id:"combo_easy",xp:35,m:()=>({desc:`Kombi: ≤ 3 Cigs & ≤ 2.0 Einheiten`,test:(d,u)=>d.cigs<=3&&u<=2})},
+{id:"improve_cigs",xp:30,m:()=>({desc:`Verbessere Cigs vs Ø`,test:d=>S.base.c?d.cigs<S.base.c:false})},
+{id:"improve_units",xp:30,m:()=>({desc:`Verbessere Einheiten vs Ø`,test:(d,u)=>S.base.u?u<S.base.u:false})},
+];const s=pick(ops),o=s.m();return{date:today(),id:s.id,desc:o.desc,xp:s.xp,done:false,_test:o.test}}
+function renderDQ(){ensureDQ();const dq=S.dq;document.getElementById("dqDesc").textContent=dq?dq.desc:"—";document.getElementById("dqReward").textContent=dq?`+${dq.xp} XP`:"";const chip=document.getElementById("dqChip");chip.textContent=dq?(dq.done?"Erledigt: "+dq.desc:"Offen: "+dq.desc):"—";chip.className="quest"+(dq&&dq.done?" ok":"")}
+function checkDQ(day,u){ensureDQ();const dq=S.dq;if(!dq||dq.date!==day.date)return{done:false,prev:false,xp:0};const prev=dq.done;const ok=dq._test?dq._test(day,u):false;dq.done=ok;save();return{done:ok,prev,xp:dq.xp}}
+/* ---------- Finalize ---------- */
+function finalizeDay(){const d=curr();const u=sumU(d.drinks);d.finalized=true;d.badge=badge(d.cigs,u);const ex=eloExplain(d.cigs,u,d.badge);S.eloPrev=S.elo||1000;d.eloDelta=ex.delta;S.elo=Math.max(400,Math.round((S.elo||1000)+d.eloDelta));
+const quest=checkDQ(d,u);if(quest.done&&!quest.prev){addXP(quest.xp);toast("Daily Quest geschafft! +"+quest.xp+" XP")}save();renderLog();upHeader();renderMini();renderCB();renderTrophies();showSummary(d,u,quest);addXP(10)}
+function showSummary(d,u,quest){const g=sumG(d.drinks).toFixed(1);const ex=eloExplain(d.cigs,u,d.badge);const Ssc=Math.round(ex.score*100);
+const bc=S.base.c,bu=S.base.u;const redC=(bc&&bc>0)?Math.max(0,Math.min(100,Math.round((1-(d.cigs/bc))*100))):null;
+const redU=(bu&&bu>0)?Math.max(0,Math.min(100,Math.round((1-(u/bu))*100))):null;const eloHTML=`<span style="font-weight:900;color:${d.eloDelta>=0?'#2cffae':'#ff6b6b'}">${d.eloDelta>=0?'+':''}${d.eloDelta}</span>`;
+const b=`<span class="pill ${d.badge.cls}" id="badgeInfoBtn">${d.badge.name}</span>`;
+const rows=[["Datum",d.date],["Zigaretten",d.cigs],["Einheiten",u.toFixed(2)],["Alkohol (g)",g],["Badge",b+"<div class='small'>"+d.badge.desc+"</div>"],
+["ΔELO",eloHTML],["Score (heute)",Ssc+"%"],["Besser als Ø",`${redC!=null?redC+'% weniger Cigs':'—'} · ${redU!=null?redU+'% weniger Einheiten':'—'}`],
+["Daily Quest",quest.done?`Erledigt — ${S.dq.desc}`:`Nicht geschafft — Ziel: ${S.dq?S.dq.desc:'—'}`]];
+document.getElementById("mTitle").textContent="Tagesabschluss · Übersicht";document.getElementById("mBody").innerHTML=rows.map(r=>`<div style="display:flex;justify-content:space-between;gap:12px;margin:8px 0"><div>${r[0]}</div><div style="text-align:right">${r[1]}</div></div>`).join("");
+document.getElementById("modal").classList.add("active");setTimeout(()=>{const b=document.getElementById('badgeInfoBtn');if(b)b.onclick=()=>{nav('badgeinfo');closeModal()}},0)}
+function closeModal(){document.getElementById("modal").classList.remove("active")}
+/* ---------- Mini & Logs ---------- */
+function renderMini(){const d=curr(),u=sumU(d.drinks||[]);document.getElementById("miniLine").textContent=`Zigaretten: ${d.cigs||0} · Einheiten: ${u.toFixed(2)}`}
+function renderLog(){const wrap=document.getElementById("cbLog");wrap.innerHTML="";const bc=S.base.c,bu=S.base.u;daysSorted().slice(-30).reverse().forEach(d=>{
+const g=sumG(d.drinks||[]),u=sumU(d.drinks||[]),ex=eloExplain(d.cigs,u,d.badge||badge(d.cigs,u)),Ssc=Math.round(ex.score*100),b=d.badge||badge(d.cigs,u);
+const vsC=(bc&&bc>0)?Math.round((d.cigs-bc)/bc*100):null;const vsU=(bu&&bu>0)?Math.round((u-bu)/bu*100):null;const eloNow=(S.eloPrev!=null && d===daysSorted()[daysSorted().length-1])?S.elo:S.elo; // display current
+const el=document.createElement('div');el.className='row';el.innerHTML=`<div>${d.date.slice(5)}</div>
+<div>${d.cigs} ${vsC==null?'<span class="flat">—</span>':vsC>0?'<span class="down">▲ '+Math.abs(vsC)+'%</span>':'<span class="up">▼ '+Math.abs(vsC)+'%</span>'}</div>
+<div>${g.toFixed(1)} g ${vsU==null?'<span class="flat">—</span>':vsU>0?'<span class="down">▲ '+Math.abs(vsU)+'%</span>':'<span class="up">▼ '+Math.abs(vsU)+'%</span>'}</div>
+<div><div class="progress"><div style="width:${Ssc}%"></div></div></div>
+<div><span class="pill ${b.cls}">${b.name}</span></div>
+<div><span style="font-weight:900">${(d.elo||S.elo||1000)}</span> <span style="font-weight:900;color:${(d.eloDelta||0)>=0?'#2cffae':'#ff6b6b'}">(${(d.eloDelta||0)>=0?'+':''}${d.eloDelta||0})</span></div>`;
+el.onclick=()=>showSummary(d,u,{done:S.dq&&S.dq.done,prev:S.dq&&S.dq.done,xp:0});wrap.appendChild(el)});}
+/* Stats table (same look as cb rows) */
+function renderCB(){const wrap=document.getElementById("cbTable");wrap.innerHTML="";daysSorted().slice(-180).reverse().forEach(d=>{
+const g=sumG(d.drinks||[]),u=sumU(d.drinks||[]),b=d.badge||badge(d.cigs,u),ex=eloExplain(d.cigs,u,b),Ssc=Math.round(ex.score*100);
+const row=document.createElement('div');row.className='row';row.innerHTML=`<div>${d.date.slice(5)}</div><div>${d.cigs}</div><div>${g.toFixed(1)} g</div>
+<div><div class="progress"><div style="width:${Ssc}%"></div></div></div><div><span class="pill ${b.cls}">${b.name}</span></div>
+<div><span style="font-weight:900">${(d.elo||S.elo||1000)}</span> <span style="font-weight:900;color:${(d.eloDelta||0)>=0?'#2cffae':'#ff6b6b'}">(${(d.eloDelta||0)>=0?'+':''}${d.eloDelta||0})</span></div>`;wrap.appendChild(row)});}
+/* ---------- Trophies (restored) ---------- */
+const TROPHIES=[
+{id:"zero7",name:"Dry 7",rar:"RARE",emoji:"🏆",cond:"7 Tage ohne Zigaretten",test:days=>streakNoCigs(days)>=7},
+{id:"elo1100",name:"ELO 1100",rar:"COMMON",emoji:"⭐",cond:"Erreiche ELO 1100",test:()=> (S.elo||1000)>=1100},
+{id:"elo1200",name:"ELO 1200",rar:"RARE",emoji:"🏆",cond:"Erreiche ELO 1200",test:()=> (S.elo||1000)>=1200},
+{id:"smoke14",name:"Smoke‑Free 14",rar:"EPIC",emoji:"💠",cond:"14 Tage ohne Zigaretten",test:days=>streakNoCigs(days)>=14},
+{id:"legend1300",name:"Legend 1300",rar:"MYTHIC",emoji:"👑",cond:"Erreiche ELO 1300",test:()=> (S.elo||1000)>=1300},
+{id:"focus3",name:"Focus 3",rar:"RARE",emoji:"🏆",cond:"3 Tage in Folge unter Ø Einheiten",test:days=>streakUnderUnits(days)>=3},
+];
+function streakNoCigs(days){let s=0;for(let i=days.length-1;i>=0;i--){if(days[i].cigs===0)s++;else break}return s}
+function streakUnderUnits(days){let s=0;for(let i=days.length-1;i>=0;i--){const u=sumU(days[i].drinks||[]);if(S.base.u && u<=S.base.u)s++;else break}return s}
+function renderTrophies(){const g=document.getElementById("trophyGrid");g.innerHTML="";TROPHIES.forEach(t=>{const unlocked=S.trophies[t.id]||t.test(daysSorted());if(unlocked)S.trophies[t.id]=true;const div=document.createElement('div');div.className='ti'+(unlocked?'':' lock');div.innerHTML=`<span class="emoji">${t.emoji}</span><div style="font-weight:900">${t.name}</div><small class="r-${t.rar.toLowerCase()}">${t.rar}</small>`;div.onclick=()=>openTrophy(t,unlocked);g.appendChild(div)});save()}
+function openTrophy(T,unlocked){const days=daysSorted();let progress="—";if(T.id==="zero7"||T.id==="smoke14"){const need=T.id==="zero7"?7:14;const have=streakNoCigs(days);progress=`${have}/${need} Tage`;}
+if(T.id==="focus3"){const need=3;const have=streakUnderUnits(days);progress=`${have}/${need} Tage`;}
+document.getElementById("mTitle").textContent=T.name+" · "+(unlocked?"FREIGESCHALTET":"GESPERRT");
+document.getElementById("mBody").innerHTML=`<div style="margin:6px 0"><span class="pill ${unlocked?'good':'warn'}">${unlocked?'Freigeschaltet':'Bedingungen'}</span></div>
+<div style="margin:8px 0">${T.cond}</div><div class="small">Fortschritt: <b>${progress}</b></div>`;document.getElementById("modal").classList.add("active")}
+/* ---------- Settings ---------- */
+function renderMini(){const d=curr(),u=sumU(d.drinks||[]);document.getElementById("miniLine").textContent=`Zigaretten: ${d.cigs||0} · Einheiten: ${u.toFixed(2)}`}
+function saveRefs(){S.base={c:+(document.getElementById("baseCigs")?.value||0)||null,u:+(document.getElementById("baseUnits")?.value||0)||null};
+S.eloPrev=S.elo||1000;S.elo=+(document.getElementById("startElo")?.value||S.elo||1000)||1000;save();upHeader();alert("Gespeichert.")}
+/* ---------- Settings View HTML ---------- */
+(function addSettings(){
+const sec=document.getElementById('settings'); if(sec) return;
+const v=document.createElement('section');v.id='settings';v.className='view';
+v.innerHTML=`<div class="card"><h2>Einstellungen</h2>
+<div class="row">
+  <div class="field" style="flex:1 1 140px"><label>Ø Cigs/Tag</label><input id="baseCigs" type="number" step="0.1" min="0" placeholder="10"></div>
+  <div class="field" style="flex:1 1 160px"><label>Ø Einheiten/Tag</label><input id="baseUnits" type="number" step="0.1" min="0" placeholder="2.0"></div>
+  <div class="field" style="flex:1 1 140px"><label>Start-ELO</label><input id="startElo" type="number" min="400" max="3000" step="1" placeholder="1000"></div>
+</div>
+<div class="row"><button class="btn" onclick="saveRefs()">Speichern</button><button class="btn" onclick="exportData()">Export</button>
+<label class="btn" for="imp" style="cursor:pointer">Import</label><input id="imp" type="file" accept="application/json" style="display:none" onchange="importData(this.files[0])">
+<button class="btn" onclick="resetAll()">Alles löschen</button></div></div>`;
+document.querySelector('main').appendChild(v);
+})(); 
+function exportData(){const u=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download="lumaquest-backup-"+today()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(u),800)}
+function importData(f){const fr=new FileReader();fr.onload=()=>{try{S=JSON.parse(fr.result);save();location.reload()}catch(e){alert("Ungültiges Backup.")}};fr.readAsText(f)}
+function resetAll(){if(confirm("Alles lokal löschen?")){localStorage.removeItem(LS);location.reload()}}
+/* ---------- Boot ---------- */
+function boot(){upHeader();renderDQ();renderMini();renderDrinks();renderLog();renderCB();}
+boot();
+</script>
+</body></html>

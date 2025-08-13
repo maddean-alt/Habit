@@ -1,0 +1,345 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LumaQuest – v7.3.8 (Daily Quest)</title><meta name="theme-color" content="#141126">
+<!-- PWA baseline -->
+<link rel="manifest" href='data:application/manifest+json,{"name":"LumaQuest","short_name":"LumaQuest","display":"standalone","background_color":"#141126","theme_color":"#141126","icons":[]}' />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{
+  --bg:#141126;--fg:#eaf2ff;--muted:#a7b3c6;--card:#1b1632;--card2:#251d4d;--neon:#ff7cc8;--accent:#ffd48a;
+  --good:#29ffa5;--warn:#ffd75a;--poor:#ff9a5c;--bad:#ff5d5d;--shadow:rgba(0,0,0,.42);
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)
+}
+/* themes */
+body.theme-arcade{--neon:#2fd1ff;--bg:#0b111a;--card:#0e1a28;--card2:#14273d}
+body.theme-scifi{--neon:#9a7bff;--bg:#05050a;--card:#0b0b17;--card2:#0f1022}
+body.theme-vaporwave{--neon:#ff7cc8;--bg:#141126;--card:#1b1632;--card2:#251d4d;--accent:#ffd48a}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--fg);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;overflow:hidden}
+/* ambience */
+body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;background:
+radial-gradient(1200px 800px at 50% -180px,rgba(255,120,180,.10),transparent 60%),
+radial-gradient(900px 600px at 6% 90%,rgba(255,220,130,.10),transparent 60%),
+radial-gradient(800px 600px at 94% 80%,rgba(140,180,255,.10),transparent 60%)}
+/* header */
+.header{position:sticky;top:0;z-index:3;padding:calc(8px + var(--safe-top)) 14px 12px;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;
+  background:linear-gradient(180deg,rgba(10,15,24,.80),rgba(10,15,24,.52));border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(12px);box-shadow:0 10px 26px var(--shadow)}
+#btnBack{display:none;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--fg);
+  padding:11px 14px;border-radius:12px;font-weight:900;min-width:44px;min-height:42px}
+.brand{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+.logo{width:40px;height:40px;border-radius:12px;position:relative;overflow:hidden;box-shadow:
+  0 0 18px rgba(255,255,255,.25),inset 0 0 22px rgba(255,255,255,.08)}
+.logo::before{content:"";position:absolute;inset:0;border-radius:12px;background:
+  conic-gradient(from 210deg,var(--neon),#9a7bff,var(--accent),var(--neon));animation:spin 16s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.title{font-size:22px;font-weight:1000;letter-spacing:.6px;background:linear-gradient(90deg,var(--neon),#9a7bff,#9bd4ff,var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 1px 12px rgba(0,0,0,.38)}
+#eloBadge{justify-self:end;padding:6px 10px;border-radius:9999px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);font-size:12px;font-weight:900;display:flex;gap:6px;align-items:center}
+/* main/footer */
+main{position:relative;height:calc(100% - 128px);overflow:auto;padding:14px 14px calc(76px + var(--safe-bottom));-webkit-overflow-scrolling:touch;z-index:1}
+footer{height:52px;display:flex;align-items:center;justify-content:center;padding:0 12px;position:fixed;left:0;right:0;bottom:0;z-index:2;
+  background:linear-gradient(180deg,rgba(10,15,24,.0),rgba(10,15,24,.92));border-top:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px);padding-bottom:var(--safe-bottom)}
+#quote{font-size:13px;color:#cfe5ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95vw}
+/* particles */
+#particles{position:fixed;inset:0;z-index:0;opacity:.56;pointer-events:none}
+/* cards */
+.card{background:linear-gradient(180deg,var(--card),var(--card2)),radial-gradient(120% 140% at 10% -10%,rgba(47,209,255,.12),transparent 60%);
+  background-blend-mode:screen,normal;border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:16px;box-shadow:0 20px 42px var(--shadow);margin-bottom:16px}
+.card h2,.card h3{margin:0 0 8px}
+/* views */
+.view{display:none}.view.active{display:block}
+/* home grid buttons */
+.home-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:12px}
+.round{aspect-ratio:1/1;border-radius:26px;display:grid;place-content:center;place-items:center;text-align:center;font-weight:900;letter-spacing:.35px;line-height:1.1;
+  color:var(--fg);border:1px solid rgba(255,255,255,.16);position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+  box-shadow:inset 0 0 50px rgba(47,209,255,.14),0 16px 30px var(--shadow);transition:transform .18s ease,box-shadow .3s ease,filter .2s ease;padding:8px}
+.round .icon{width:40px;height:40px;opacity:.95;margin-bottom:6px;filter:drop-shadow(0 0 10px rgba(47,209,255,.35))}
+.round .sub{font-size:12px;color:var(--muted);font-weight:700;opacity:.9}
+.round::after{content:"";position:absolute;inset:-4px;border-radius:inherit;pointer-events:none;box-shadow:0 0 36px rgba(255,255,255,.18),0 0 120px rgba(255,255,255,.12) inset,0 0 22px rgba(154,123,255,.16) inset;animation:breath 3.2s ease-in-out infinite}
+@keyframes breath{0%{opacity:.55;transform:scale(.992)}50%{opacity:1;transform:scale(1.015)}100%{opacity:.55;transform:scale(.992)}}
+.round:active{transform:scale(.98)}
+/* forms */
+.field{display:grid;gap:6px;margin-bottom:12px}.field label{font-size:13px;color:var(--muted)}
+.field input,.field select{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:13px 14px;color:var(--fg);outline:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}.btn{border-radius:14px;padding:13px 15px;font-weight:900;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.10);color:var(--fg);box-shadow:0 12px 26px var(--shadow);cursor:pointer}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:10px}.list li{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:14px;font-size:14px}
+.small{font-size:12px;color:var(--muted)}
+/* pills/badges */
+.pill{padding:6px 10px;border-radius:9999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.10);font-weight:900}
+.good{background:rgba(41,255,165,.22);border-color:rgba(41,255,165,.95);color:#d8ffe9;box-shadow:0 0 34px rgba(41,255,165,.58)}
+.warn{background:rgba(255,215,90,.22);border-color:rgba(255,215,90,.98);color:#fff0bd;box-shadow:0 0 34px rgba(255,215,90,.58)}
+.poor{background:rgba(255,154,92,.22);border-color:rgba(255,154,92,.98);color:#ffe0d6;box-shadow:0 0 34px rgba(255,154,92,.58)}
+.bad{background:rgba(255,93,93,.24);border-color:rgba(255,93,93,1);color:#ffd9d9;box-shadow:0 0 34px rgba(255,93,93,.68)}
+/* table + progress */
+.table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.table th,.table td{font-size:12px;padding:8px;text-align:left;white-space:nowrap}
+.progress{height:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--neon),#9a7bff)}
+/* xp bar */
+#xpWrap{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:9999px;height:14px;overflow:hidden}
+#xpBar{height:100%;width:0;background:linear-gradient(90deg,var(--neon),#9a7bff)}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:5}.modal.active{display:flex}
+.modal-card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px;width:min(560px,92vw);box-shadow:0 20px 40px var(--shadow)}
+/* quest chip */
+.quest-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);font-weight:900}
+.quest-ok{background:rgba(41,255,165,.22);border-color:rgba(41,255,165,.95)} .quest-open{background:rgba(255,255,255,.08)}
+</style></head><body class="theme-vaporwave">
+<canvas id="particles"></canvas>
+<div class="header" role="banner">
+  <button id="btnBack" onclick="navTo('home')" aria-label="Zurück">←</button>
+  <div class="brand"><div class="logo" aria-hidden="true"></div><div class="title" id="appTitle">LumaQuest – Habit ELO</div></div>
+  <div id="eloBadge" aria-live="polite">ELO <span id="eloVal">1000</span> <span id="eloTrend">↔︎</span></div>
+</div>
+<main role="main">
+<!-- HOME -->
+<section id="view-home" class="view active">
+  <div class="home-grid" role="navigation" aria-label="Hauptmenü">
+    <button class="round" onclick="navTo('tracking')" aria-label="Tracking"><svg class="icon" viewBox="0 0 24 24"><path d="M6 3h8a2 2 0 0 1 2 2v7l-4 4H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 12l4-4 2 2-4 4-2 .5.5-2z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 7h5M7 10h3" stroke="currentColor" stroke-width="2"/></svg><div class="sub">Tracking</div></button>
+    <button class="round" onclick="navTo('stats')" aria-label="Statistiken"><svg class="icon" viewBox="0 0 24 24"><path d="M4 18V6M9 18V10M14 18V4M19 18V12" stroke="currentColor" stroke-width="2" fill="none"/></svg><div class="sub">Statistiken</div></button>
+    <button class="round" onclick="navTo('trophies')" aria-label="Trophäen"><svg class="icon" viewBox="0 0 24 24"><path d="M7 4h10v3a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 14h6v3H9z" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="sub">Trophäen</div></button>
+    <button class="round" onclick="navTo('settings')" aria-label="Einstellungen"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2"/></svg><div class="sub">Einstellungen</div></button>
+  </div>
+
+  <div class="card"><h3>Level</h3><div id="xpWrap"><div id="xpBar"></div></div><div id="xpLabel" class="small">Level 1 · 0 / 100 XP</div></div>
+
+  <div class="card" id="dailyQuestCard">
+    <h3>Daily Quest</h3>
+    <div id="dqDesc" style="font-weight:800;margin-bottom:6px">—</div>
+    <div class="small">Belohnung: <b id="dqReward">+25 XP</b></div>
+    <div style="height:8px"></div>
+    <div id="dqChip" class="quest-chip quest-open">Offen</div>
+    <div class="small" style="margin-top:6px">Wird beim <b>Tagesabschluss</b> automatisch geprüft.</div>
+  </div>
+
+  <div class="card" id="miniToday"><h3>Heute</h3><div id="miniLine" style="font-weight:800;">—</div></div>
+</section>
+<!-- TRACKING -->
+<section id="view-tracking" class="view">
+  <div class="card"><h2>Heutiges Tracking</h2>
+    <div class="field"><label for="cigs">Zigaretten</label><select id="cigs"><option value="0">0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>12</option><option>15</option><option>20</option><option>25</option><option>30</option></select></div>
+    <div class="row small">Schnell hinzufügen:</div>
+    <div class="row">
+      <button class="btn" onclick="instant('radler',0.5,2.5)">+ Radler (0.5 L · 2.5%)</button>
+      <button class="btn" onclick="instant('bier',0.5,5)">+ Bier (0.5 L · 5%)</button>
+      <button class="btn" onclick="instant('wein',0.2,12)">+ Wein (0.2 L · 12%)</button>
+      <button class="btn" onclick="instant('spirit',0.02,40)">+ Shot (0.02 L · 40%)</button>
+    </div>
+    <div class="row small">Custom:</div>
+    <div class="row">
+      <div class="field" style="flex:1 1 120px;"><label for="alcAmount">Menge (L)</label><input id="alcAmount" type="number" step="0.01" min="0" placeholder="0.33"></div>
+      <div class="field" style="flex:1 1 120px;"><label for="alcPct">% vol</label><input id="alcPct" type="number" step="0.1" min="0" max="100" placeholder="5.0"></div>
+      <div class="field" style="flex:1 1 150px;"><label for="alcType">Typ</label>
+        <select id="alcType"><option value="bier">Bier</option><option value="radler">Radler</option><option value="wein">Wein</option><option value="spirit">Hochprozentig</option><option value="custom">Custom</option></select>
+      </div>
+      <button class="btn" onclick="addDrink()">Getränk hinzufügen</button>
+    </div>
+    <div class="small">Tages-Einheiten: <b id="unitsTotal">0.00</b> · Alkohol: <b id="gramsTotal">0.0 g</b></div>
+  </div>
+  <div class="card"><h3>Getränke heute</h3><ul id="drinkList" class="list"></ul></div>
+  <div class="card"><div class="row"><button class="btn" onclick="saveDay()">Tag speichern</button><button class="btn" onclick="finalizeDay()">Tagesabschluss</button><button class="btn" onclick="clearDrinks()">Alle Getränke löschen</button></div></div>
+  <div class="card"><h3>Tages-Log</h3><div id="logWrap"></div></div>
+</section>
+<!-- STATS -->
+<section id="view-stats" class="view">
+  <div class="card"><h2>Statistiken</h2>
+    <canvas id="chartCigs" width="700" height="220" style="max-width:100%;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)"></canvas>
+    <div style="height:8px"></div>
+    <canvas id="chartUnits" width="700" height="220" style="max-width:100%;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)"></canvas>
+  </div>
+  <div class="card"><h2>Tagesabschlüsse</h2>
+    <table class="table" id="cbTable"><thead><tr><th>Datum</th><th>Cigs</th><th>Alk. (g)</th><th style="width:40%">Progress</th><th>Badge</th><th>ΔELO</th></tr></thead><tbody></tbody></table>
+  </div>
+</section>
+<!-- TROPHIES INFO -->
+<section id="view-trophies" class="view">
+  <div class="card"><h2>Badge-Regeln (Info)</h2>
+    <ul class="list">
+      <li><span>Zero Hero</span><span class="pill good">0 Cigs & 0 Einheiten</span></li>
+      <li><span>Strong Cut</span><span class="pill good">≤2 Cigs & ≤1.0 Einheiten</span></li>
+      <li><span>Holding Line</span><span class="pill warn">≤3 Cigs & ≤2.5 Einheiten</span></li>
+      <li><span>Under Watch</span><span class="pill poor">≤5 Cigs & ≤3.5 Einheiten</span></li>
+      <li><span>Steady 10</span><span class="pill poor">≤10 Cigs & ≤4.5 Einheiten</span></li>
+      <li><span>Game Over</span><span class="pill bad">&gt;10 Cigs ODER &gt;4.5 Einheiten</span></li>
+    </ul>
+  </div>
+</section>
+<!-- SETTINGS -->
+<section id="view-settings" class="view">
+  <div class="card"><h2>Einstellungen</h2>
+    <div class="row"><button class="btn" onclick="setTheme('vaporwave')">Vaporwave</button><button class="btn" onclick="setTheme('arcade')">Arcade</button><button class="btn" onclick="setTheme('scifi')">Sci-Fi</button></div>
+    <div class="row">
+      <div class="field" style="flex:1 1 140px"><label>Ø Cigs/Tag</label><input id="baseCigs" type="number" step="0.1" min="0" placeholder="10"></div>
+      <div class="field" style="flex:1 1 160px"><label>Ø Einheiten/Tag</label><input id="baseUnits" type="number" step="0.1" min="0" placeholder="2.0"></div>
+      <div class="field" style="flex:1 1 140px"><label>Start-ELO</label><input id="startElo" type="number" min="400" max="3000" step="1" placeholder="1000"></div>
+    </div>
+    <div class="row"><button class="btn" onclick="saveRefs()">Speichern</button><button class="btn" onclick="exportData()">Export</button><label class="btn" for="impFile" style="cursor:pointer">Import</label><input id="impFile" type="file" accept="application/json" style="display:none" onchange="importData(this.files[0])"><button class="btn" onclick="resetData()">Alles löschen</button></div>
+  </div>
+</section>
+</main>
+<!-- MODAL -->
+<div id="modal" class="modal" onclick="closeModal(event)"><div class="modal-card" onclick="event.stopPropagation()"><h3 id="mTitle">Tagesabschluss · Übersicht</h3><div id="mBody">—</div><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeModal()">Schließen</button></div></div></div>
+<footer><span id="quote">—</span></footer>
+<script>
+/* ===== State ===== */
+const LS_KEY="lumaquest_v738";
+let state=JSON.parse(localStorage.getItem(LS_KEY)||'{"theme":"vaporwave","days":[],"elo":1000,"base":{"c":null,"u":null},"xp":0,"level":1,"dailyQuest":null}');
+function save(){localStorage.setItem(LS_KEY,JSON.stringify(state))}
+// Local-date today() to avoid UTC drift
+const today=()=>{const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dd}`;}
+function curr(){const key=today();let d=state.days.find(x=>x.date===key);if(!d){d={date:key,cigs:0,drinks:[],finalized:false,badge:null,eloDelta:0};state.days.push(d)}if(!d.drinks)d.drinks=[];return d}
+const grams=dr=>Math.max(0,(+dr.amount||0)*1000*((+dr.pct||0)/100)*0.8);
+const sumUnits=arr=>arr.reduce((s,x)=>s+grams(x)/10,0);
+const sumGrams=arr=>arr.reduce((s,x)=>s+grams(x),0);
+const sortedDays=()=>state.days.slice().sort((a,b)=>a.date>b.date?1:-1);
+/* ===== Init ===== */
+const QUOTES=["Kleine Schritte. Große Richtung.","Heute zählst du.","Nicht perfekt. Konsequent.","Du brennst heller als jede Gewohnheit.","Ein leiser Sieg zählt.","Weniger Rauch, mehr Raum.","Du bist der Trend.","Reset ist Stärke."];
+document.getElementById("quote").textContent=QUOTES[new Date().getDate()%QUOTES.length];
+setTheme(state.theme||"vaporwave");updateHeader();ensureDailyQuest();renderDailyQuest();renderMini();renderLog();renderDrinks();drawCharts();renderCB();updateXPUI();
+/* ===== Nav ===== */
+function navTo(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById("view-"+id).classList.add("active");document.getElementById("btnBack").style.display=id!=="home"?"inline-flex":"none";if(id==="stats"){drawCharts();renderCB()}if(id==="tracking"){renderDrinks()}}
+/* ===== Theme & particles (safe re-init) ===== */
+function setTheme(t){state.theme=t;save();document.body.className="theme-"+t;initParticles()}
+function initParticles(){
+  const c=document.getElementById("particles");
+  const x=c.getContext("2d");
+  if(window._pState){cancelAnimationFrame(window._pState.raf);removeEventListener("resize",window._pState.res);window._pState=null}
+  function R(){c.width=innerWidth;c.height=innerHeight}
+  R(); const res=()=>R(); addEventListener("resize",res);
+  let A=[...Array(120)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2+0.6,life:120+Math.random()*240}));
+  function step(){x.clearRect(0,0,c.width,c.height);x.globalCompositeOperation="lighter";const neon=getComputedStyle(document.body).getPropertyValue('--neon').trim();
+    A.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life-=.5;if(p.x<0)p.x+=c.width;if(p.x>c.width)p.x-=c.width;if(p.y<0)p.y+=c.height;if(p.y>c.height)p.y-=c.height;
+      if(p.life<=0){p.x=Math.random()*c.width;p.y=Math.random()*c.height;p.life=120+Math.random()*240}
+      x.fillStyle=hexToRgba(neon,.75);x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();x.fillStyle=hexToRgba(neon,.18);x.beginPath();x.arc(p.x,p.y,p.r*2.2,0,6.283);x.fill();});
+    window._pState.raf=requestAnimationFrame(step)
+  }
+  window._pState={raf:0,res};
+  document.addEventListener('visibilitychange',()=>{
+    if(!window._pState)return;
+    if(document.hidden){cancelAnimationFrame(window._pState.raf);}
+    else{window._pState.raf=requestAnimationFrame(step);}
+  },{passive:true});
+  step();
+}
+function hexToRgba(h,a){if(h.startsWith('#'))h=h.slice(1);if(h.length===3)h=h.split('').map(c=>c+c).join('');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return`rgba(${r},${g},${b},${a})`}
+/* ===== Header, XP ===== */
+function updateHeader(){document.getElementById("eloVal").textContent=(state.elo||1000);const tr=(state.elo||1000)-(state.eloPrev||state.elo||1000),t=document.getElementById("eloTrend");t.textContent=tr>0?"↑":tr<0?"↓":"↔︎";t.style.color=tr>0?"var(--good)":tr<0?"var(--bad)":"#cfe5ff"}
+function addXP(n){state.xp+=n;while(state.xp>=100){state.xp-=100;state.level++}save();updateXPUI()}
+function updateXPUI(){document.getElementById("xpBar").style.width=Math.min(100,Math.max(0,state.xp))+"%";document.getElementById("xpLabel").textContent=`Level ${state.level||1} · ${state.xp||0} / 100 XP`}
+/* ===== Tracking ===== */
+function labelDrink(dr){const m={radler:"Radler",bier:"Bier",wein:"Wein",spirit:"Hochprozentig",custom:"Custom"};return (m[dr.type]||dr.type)+" • "+(+dr.amount||0).toFixed(2)+" L @ "+(+dr.pct||0).toFixed(1)+"%"}
+function renderDrinks(){const d=curr(),ul=document.getElementById("drinkList");ul.innerHTML="";let u=0,g=0;d.drinks.forEach((dr,i)=>{const ui=grams(dr)/10;u+=ui;g+=grams(dr);const li=document.createElement("li");li.innerHTML=`<div>${labelDrink(dr)}</div><div>U: ${ui.toFixed(2)} <button class="btn" style="padding:6px 10px;margin-left:8px" onclick="removeDrink(${i})">Entfernen</button></div>`;ul.appendChild(li)});document.getElementById("unitsTotal").textContent=u.toFixed(2);document.getElementById("gramsTotal").textContent=g.toFixed(1)+" g"}
+function instant(type,amount,pct){const d=curr();d.drinks.push({type,amount,pct});save();renderDrinks();renderMini();toast(labelDrink({type,amount,pct})+" hinzugefügt")}
+function addDrink(){const type=document.getElementById('alcType').value,amount=parseFloat(document.getElementById('alcAmount').value||'0'),pct=parseFloat(document.getElementById('alcPct').value||'0');if(!(amount>0))return alert('Menge angeben.');
+const amt=Math.min(5,Math.max(0,amount)), pc=Math.min(100,Math.max(0,pct));
+instant(type,amt,pc);document.getElementById('alcAmount').value='';document.getElementById('alcPct').value=''}
+function removeDrink(i){const d=curr();d.drinks.splice(i,1);save();renderDrinks();renderMini()}
+function clearDrinks(){if(!confirm('Alle Getränke heute löschen?'))return;const d=curr();d.drinks=[];save();renderDrinks();renderMini()}
+function saveDay(){const d=curr();d.cigs=+document.getElementById("cigs").value||0;save();renderLog();renderMini();toast("Gespeichert");addXP(5)}
+function finalizeDay(){const d=curr();const u=sumUnits(d.drinks);d.finalized=true;d.badge=calcBadge(d.cigs,u);const e=eloExplain(d.cigs,u,d.badge);state.eloPrev=state.elo||1000;d.eloDelta=e.delta;state.elo=Math.max(400,Math.round((state.elo||1000)+d.eloDelta));
+// Daily quest check
+const res=checkQuest(d,u); if(res.completed && !res.wasCompleted){addXP(res.rewardXP); toast("Daily Quest geschafft! +"+res.rewardXP+" XP");}
+save();renderLog();updateHeader();renderMini();drawCharts();renderCB();showFinalizeSummary(d,u,res);addXP(15+Math.max(0,Math.round(d.eloDelta/5)));toast("Tagesabschluss gespeichert")}
+/* ===== Badges/ELO ===== */
+function calcBadge(c,u){if(c===0&&u===0)return{id:"zero",name:"Zero Hero",cls:"good"};if(c<=2&&u<=1.0)return{id:"strong",name:"Strong Cut",cls:"good"};if(c<=3&&u<=2.5)return{id:"hold",name:"Holding Line",cls:"warn"};if(c<=5&&u<=3.5)return{id:"watch",name:"Under Watch",cls:"poor"};if(c<=10&&u<=4.5)return{id:"steady",name:"Steady 10",cls:"poor"};return{id:"over",name:"Game Over",cls:"bad"}}
+function eloExplain(c,u,b){const bc=state.base.c,bu=state.base.u,pC=(!bc||bc===0)?(c===0?1:0):Math.max(0,1-Math.min(1,c/bc)),pU=(!bu||bu===0)?(u===0?1:0):Math.max(0,1-Math.min(1,u/bu));let S=.6*pC+.4*pU;let pen=0;if(c>=10)pen-=.2;if(u>=4.5)pen-=.2;S=Math.min(1,Math.max(0,S+pen));let K=28;if(b&&b.id==="zero")K+=18;else if(b&&b.cls==="good")K+=8;if(b&&b.cls==="bad")K+=6;let delta=Math.round(K*(S-.5));delta=Math.max(-60,Math.min(60,delta));return{S,K,delta}}
+/* ===== Daily Quest ===== */
+function ensureDailyQuest(){if(state.dailyQuest && state.dailyQuest.date===today()) return; state.dailyQuest = genDailyQuest(); save();}
+function seedFromDate(){const t=today().replace(/-/g,'');let h=0;for(let i=0;i<t.length;i++){h=(h*31 + t.charCodeAt(i))>>>0;}return h||1}
+function rand01(){let s=seedFromDate(); s^=s<<13; s^=s>>>17; s^=s<<5; return (s>>>0)/4294967295;}
+function pick(arr){return arr[Math.floor(rand01()*arr.length)]}
+function genDailyQuest(){
+  const base = state.base || {c:null,u:null};
+  const choices = [];
+  choices.push({id:"cigs_max", rewardXP:25, make:()=>{const t=pick([0,2,3,5]); return {desc:`Rauche ≤ ${t} Zigaretten`, test:(d,u)=>d.cigs<=t};}});
+  choices.push({id:"units_max", rewardXP:25, make:()=>{const t=pick([0,1.0,2.0,3.0]); return {desc:`Bleib bei ≤ ${t.toFixed(1)} Einheiten`, test:(d,u)=>u<=t};}});
+  choices.push({id:"combo_easy", rewardXP:35, make:()=>({desc:`Kombi: ≤ 3 Cigs & ≤ 2.0 Einheiten`, test:(d,u)=>d.cigs<=3 && u<=2.0})});
+  if(base.c && base.c>0){choices.push({id:"improve_cigs", rewardXP:30, make:()=>{const t=Math.max(0,Math.floor(base.c*0.5)); return {desc:`Verbesserung: ≤ ${t} Cigs (50% deines Ø)`, test:(d,u)=>d.cigs<=t};}});}
+  if(base.u && base.u>0){choices.push({id:"improve_units", rewardXP:30, make:()=>{const t=Math.max(0,(base.u*0.5)); return {desc:`Verbesserung: ≤ ${t.toFixed(1)} Einheiten (50% deines Ø)`, test:(d,u)=>u<=t};}});}
+  const q = pick(choices);
+  const built = q.make();
+  return {date: today(), id:q.id, desc: built.desc, rewardXP: q.rewardXP, completed:false, testId: q.id};
+}
+function renderDailyQuest(){
+  const card=document.getElementById("dailyQuestCard"); if(!card) return;
+  const dq=state.dailyQuest; if(!dq){document.getElementById("dqDesc").textContent="—";return;}
+  document.getElementById("dqDesc").textContent=dq.desc;
+  document.getElementById("dqReward").textContent="+"+dq.rewardXP+" XP";
+  const chip=document.getElementById("dqChip");
+  chip.textContent=dq.completed?"Erledigt":"Offen";
+  chip.className="quest-chip "+(dq.completed?"quest-ok":"quest-open");
+}
+function checkQuest(day,u){
+  ensureDailyQuest();
+  const dq=state.dailyQuest;
+  if(!dq || dq.date!==day.date){return {completed:false, wasCompleted:false, rewardXP:0};}
+  const was=dq.completed;
+  // Rebuild test function by id
+  let ok=false;
+  switch(dq.id){
+    case "cigs_max":{
+      const t=parseInt(dq.desc.match(/\d+/)); ok = day.cigs<=t; break;
+    }
+    case "units_max":{
+      const m=dq.desc.match(/≤ ([0-9.]+) Einheiten/); const t=parseFloat(m?m[1]:"0"); ok = u<=t; break;
+    }
+    case "combo_easy": ok = day.cigs<=3 && u<=2.0; break;
+    case "improve_cigs":{
+      const t=parseInt(dq.desc.match(/\d+/)); ok = day.cigs<=t; break;
+    }
+    case "improve_units":{
+      const m=dq.desc.match(/≤ ([0-9.]+) Einheiten/); const t=parseFloat(m?m[1]:"0"); ok = u<=t; break;
+    }
+  }
+  if(ok){ dq.completed=true; save(); renderDailyQuest(); }
+  return {completed:dq.completed, wasCompleted:was, rewardXP:dq.rewardXP};
+}
+/* ===== Mini & Log ===== */
+function renderMini(){const d=curr(),u=sumUnits(d.drinks||[]);document.getElementById("miniLine").textContent="Cigs: "+(d.cigs||0)+" · Einheiten: "+u.toFixed(2)}
+function renderLog(){const wrap=document.getElementById("logWrap");wrap.innerHTML="";sortedDays().slice(-90).reverse().forEach(d=>{const u=sumUnits(d.drinks||[]);const row=document.createElement("div");row.className="card";row.style.padding="10px 12px";const left=d.date+(d.finalized?' <span class=\\"pill\\">final</span>':'');const mid="C: "+d.cigs+" · U: "+u.toFixed(2);const right=d.finalized?(`<span class="pill ${d.badge?d.badge.cls:''}">${d.badge?d.badge.name:''}</span> <span class="small" style="margin-left:8px">ΔELO ${(d.eloDelta>0?'+':'')+d.eloDelta}</span>`):'—';row.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;align-items:center"><div>${left}</div><div style="text-align:center">${mid}</div><div style="text-align:right">${right}</div></div>`;wrap.appendChild(row)})}
+/* ===== Stats ===== */
+function drawCharts(){const days=sortedDays();const c1=document.getElementById('chartCigs'),ctx1=c1.getContext('2d');const c2=document.getElementById('chartUnits'),ctx2=c2.getContext('2d');if(days.length===0){[ctx1,ctx2].forEach(ctx=>{ctx.clearRect(0,0,700,220);ctx.fillStyle='rgba(255,255,255,.6)';ctx.fillText('Noch keine Daten',12,18)});return}const xs=days.map(d=>d.date.slice(5)),yc=days.map(d=>+d.cigs||0),yu=days.map(d=>sumUnits(d.drinks||[]));renderChart(c1,xs,yc,'Cigs/Tag',0,Math.max(10,Math.ceil(Math.max(...yc)*1.2)));renderChart(c2,xs,yu,'Einheiten/Tag',0,Math.max(5,Math.ceil(Math.max(...yu)*1.2)))}
+function renderChart(canvas,labels,values,title,minY,maxY){
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const cssW=parseInt(canvas.getAttribute('width'),10);
+  const cssH=parseInt(canvas.getAttribute('height'),10);
+  if(canvas._scaledForDPR!==dpr){
+    canvas._scaledForDPR=dpr;
+    canvas.width=Math.round(cssW*dpr);
+    canvas.height=Math.round(cssH*dpr);
+    canvas.style.width=cssW+'px';
+    canvas.style.height=cssH+'px';
+  }
+  const W=canvas.width,H=canvas.height,L=40*dpr,R=12*dpr,T=22*dpr,B=28*dpr;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,255,255,.03)';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.beginPath();ctx.moveTo(L,T);ctx.lineTo(L,H-B);ctx.lineTo(W-R,H-B);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.65)';ctx.font=(12*dpr)+'px system-ui';ctx.fillText(title,L,16*dpr);
+  for(let i=0;i<=5;i++){const y=minY+(maxY-minY)*i/5,py=mapY(y);ctx.strokeStyle='rgba(255,255,255,.08)';ctx.beginPath();ctx.moveTo(L,py);ctx.lineTo(W-R,py);ctx.stroke();ctx.fillStyle='rgba(255,255,255,.55)';ctx.fillText(y.toFixed(0),6*dpr,py+4*dpr)}
+  const n=labels.length,mx=Math.min(8,n);
+  for(let t=0;t<mx;t++){const idx=Math.round(t*(n-1)/(mx-1));const px=mapX(idx);ctx.fillStyle='rgba(255,255,255,.55)';ctx.fillText(labels[idx],px-12*dpr,H-8*dpr)}
+  ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--neon').trim();ctx.lineWidth=2*dpr;ctx.beginPath();
+  for(let i=0;i<n;i++){const px=mapX(i),py=mapY(values[i]);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}ctx.stroke();
+  ctx.fillStyle='#fff';for(let i=0;i<n;i++){const px=mapX(i),py=mapY(values[i]);ctx.beginPath();ctx.arc(px,py,2.6*dpr,0,6.283);ctx.fill()}
+  function mapX(i){return L+(i/(n-1||1))*(W-L-R)}function mapY(v){const t=(v-minY)/((maxY-minY)||1);return (H-B)-t*((H-B)-T)}
+}
+/* ===== Control Board table ===== */
+function renderCB(){const tb=document.querySelector('#cbTable tbody');if(!tb)return;tb.innerHTML="";sortedDays().slice(-45).reverse().forEach(d=>{const g=sumGrams(d.drinks||[]),u=sumUnits(d.drinks||[]),prog=eloExplain(d.cigs,u,d.badge||calcBadge(d.cigs,u)).S;const tr=document.createElement('tr');tr.innerHTML=`<td>${d.date.slice(5)}</td><td>${d.cigs}${d.cigs>0?' ▲':' —'}</td><td>${g.toFixed(1)}${g>0?' ▲':' —'}</td><td><div class="progress"><div style="width:${Math.round(prog*100)}%"></div></div></td><td>${d.finalized?('<span class="pill '+(d.badge?d.badge.cls:'')+'">'+(d.badge?d.badge.name:'')+'</span>'):'—'}</td><td>${d.finalized?((d.eloDelta>0?'+':'')+d.eloDelta):'—'}</td>`;tb.appendChild(tr)})}
+/* ===== Modal Summary ===== */
+function showFinalizeSummary(d,u,questRes){const g=sumGrams(d.drinks||[]).toFixed(1),S=eloExplain(d.cigs,u,d.badge).S;const rows=[["Datum",d.date],["Zigaretten",d.cigs],["Einheiten",u.toFixed(2)],["Alkohol (g)",g],["Badge",d.badge.name],["ΔELO",(d.eloDelta>0?'+':'')+d.eloDelta],["Progress",Math.round(S*100)+'%']]; if(questRes){rows.push(["Daily Quest", (questRes.completed?"Erfolgreich":"Nicht geschafft") + (questRes.completed&&!questRes.wasCompleted?` (+${questRes.rewardXP} XP)`:``)])} let html='<table class="table"><tbody>';rows.forEach(r=>html+=`<tr><td style="color:#cfe5ff">${r[0]}</td><td>${r[1]}</td></tr>`);html+='</tbody></table>';document.getElementById("mBody").innerHTML=html;document.getElementById("modal").classList.add("active")}
+function closeModal(){document.getElementById("modal").classList.remove("active")}
+/* ===== Settings ===== */
+function saveRefs(){state.base={c:+(document.getElementById("baseCigs").value||0)||null,u:+(document.getElementById("baseUnits").value||0)||null};state.eloPrev=state.elo||1000;state.elo=+(document.getElementById("startElo").value||1000)||1000;save();updateHeader();alert("Gespeichert.")}
+function exportData(){const u=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download="lumaquest-backup-"+today()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(u),800)}
+function importData(f){const fr=new FileReader();fr.onload=()=>{try{state=JSON.parse(fr.result);save();location.reload()}catch(e){alert("Ungültiges Backup.")}};fr.readAsText(f)}
+function resetData(){if(confirm("Alles lokal löschen?")){localStorage.removeItem(LS_KEY);location.reload()}}
+/* ===== Toast ===== */
+function toast(txt){const el=document.createElement('div');el.textContent=txt;el.style.cssText='position:fixed;left:50%;top:20%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.2);z-index:6';document.body.appendChild(el);setTimeout(()=>el.remove(),1200)}
+</script>
+</body></html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>LumaQuest – Habit ELO · v7.3.7-step1.1</title><meta name="theme-color" content="#0a0c14"><style>
+:root{--bg:#0a0c14;--card:#111424;--edge:rgba(162,179,255,.12);--text:#eef1ff;--mut:#a6b0d4;--accent1:#ff8bd5;--accent2:#a78bfa;--accent3:#60a5fa;--accent4:#34d399;--chip:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.1)}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:radial-gradient(1200px 900px at 50% -180px,#1b1d2e 0,#0a0c14 40%),#0a0c14;color:var(--text);font:600 16px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial}
+h1,h2,h3{margin:0 0 10px}small{opacity:.8}.wrap{max-width:880px;margin:0 auto;padding:16px 16px 110px}
+/* Header */
+.header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,#0b0e18,rgba(11,14,24,.55));border-bottom:1px solid var(--edge);backdrop-filter:blur(10px)}
+.hbar{max-width:880px;margin:0 auto;padding:12px 12px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+.logo{width:30px;height:30px;border-radius:10px;background:conic-gradient(from 190deg,#ff8bd5,#b48bff,#6ab8ff,#39e0b4,#ff8bd5);box-shadow:0 0 18px rgba(140,120,255,.45),0 0 28px rgba(255,120,220,.35)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px;background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.badge-elo{padding:8px 12px;border-radius:999px;border:1px solid var(--edge);background:rgba(255,255,255,.05);font-variant-numeric:tabular-nums}
+/* Back button simplified, looks clean on dark bg */
+.back{width:auto;min-width:42px;height:42px;padding:0 12px;border-radius:14px;display:none;place-items:center;background:rgba(255,255,255,.04);border:1px solid var(--edge);color:var(--text);font-weight:900}
+.back span{font-size:18px;line-height:1}
+/* Home tiles */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tile{height:170px;border-radius:30px;padding:18px 16px 14px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border:1px solid var(--edge);position:relative;overflow:hidden;box-shadow:0 20px 55px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.04);transition:transform .12s ease}
+.tile::before{content:"";position:absolute;inset:-40%;background:radial-gradient(closest-side,rgba(164,130,255,.18),transparent 60%);filter:blur(14px);animation:breath 6s ease-in-out infinite}
+.tile::after{content:"";position:absolute;inset:0;border-radius:30px;box-shadow:0 0 0 0 rgba(167,139,250,0),0 0 40px 10px rgba(255,139,213,0);animation:glow 5s ease-in-out infinite}
+@keyframes breath{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,0),0 0 34px 6px rgba(255,139,213,.1)}50%{box-shadow:0 0 0 0 rgba(167,139,250,.06),0 0 54px 12px rgba(96,165,250,.14)}}
+.tile:active{transform:translateY(1px)}.ico{width:54px;height:54px;margin:6px auto 8px;opacity:.95}
+.tile svg{width:100%;height:100%;stroke:#e8edff;stroke-width:2.3;fill:none;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 6px rgba(120,160,255,.35))}
+.lbl{font-weight:900;letter-spacing:.2px;white-space:normal;line-height:1.15;word-break:break-word;font-size:clamp(14px,3.5vw,18px);padding:0 6px}
+/* Cards/controls */
+.panel{background:rgba(255,255,255,.04);border:1px solid var(--edge);border-radius:24px;padding:18px;margin:16px 0;box-shadow:0 12px 34px rgba(0,0,0,.28)}.panel h2{font-size:26px;overflow-wrap:anywhere}
+label{display:block;margin:12px 0 6px;opacity:.9}input,select{width:100%;padding:14px;border-radius:14px;background:var(--chip);border:1px solid var(--stroke);color:var(--text);font-weight:700}
+button{appearance:none;border:1px solid var(--edge);background:var(--chip);color:var(--text);padding:12px 16px;border-radius:14px;font-weight:800}.btn{display:inline-flex;align-items:center;gap:10px;white-space:normal}
+/* Badges & board */
+.badge{display:inline-block;padding:8px 14px;border-radius:999px;font-weight:800;border:1px solid;white-space:normal;overflow-wrap:anywhere}
+.b-green{background:rgba(30,233,151,.14);border-color:#16e0a1}.b-amber{background:rgba(255,199,0,.12);border-color:#ffc700}.b-orange{background:rgba(255,120,60,.14);border-color:#ff7a3c}.b-red{background:rgba(255,92,92,.14);border-color:#ff5c5c}
+.cb-list{display:grid;gap:12px}.cb-row{display:grid;grid-template-columns:auto auto 1fr auto;gap:10px;align-items:center;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.05);min-width:0}
+.cb-date,.cb-cigs,.cb-alc,.cb-elo{min-width:0}.cb-cigs,.cb-alc{display:inline-flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums;white-space:normal;overflow-wrap:anywhere}
+.cb-elo{justify-self:end;font-variant-numeric:tabular-nums;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06)}.cb-elo.gain{color:#30e39a}.cb-elo.loss{color:#ff5d6c}
+.cb-progress{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;min-width:0}.cb-bar{height:10px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden}
+.cb-bar>i{display:block;height:100%;width:var(--pct,0%);background:linear-gradient(90deg,#a78bfa,#60a5fa)}.cb-badge{justify-self:end;max-width:100%;padding:6px 12px;border-radius:999px;line-height:1.1;white-space:normal;overflow-wrap:anywhere;border:1px solid rgba(255,255,255,.14)}
+@media (max-width:420px){.cb-row{grid-template-columns:1fr 1fr}.cb-alc{justify-self:end}.cb-progress{grid-column:1/3}.cb-elo{grid-column:2/3;justify-self:end}}
+@media (max-width:340px){.cb-progress{grid-template-columns:1fr}}
+/* Footer */
+.footer{position:sticky;bottom:0;z-index:4;background:linear-gradient(180deg,rgba(10,12,20,.1),#0a0c14);border-top:1px solid var(--edge);backdrop-filter:blur(8px)}.footer .wrap{padding:14px 16px}.mute{color:var(--mut);font-weight:700;text-align:center}
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(7,9,15,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:30}.modal.active{display:flex}
+.modal .box{width:min(92vw,560px);background:var(--card);border:1px solid var(--edge);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:18px}.mh{font-size:20px;font-weight:900;margin-bottom:8px}
+.srow{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.08)}.srow:last-child{border-bottom:0}.srow .k{opacity:.85}.srow .v{justify-self:end;text-align:right;overflow-wrap:anywhere;white-space:normal}
+/* Utils */
+.eloPos{color:#30e39a;font-weight:900}.eloNeg{color:#ff5d6c;font-weight:900}canvas#p{position:fixed;inset:0;z-index:-1;opacity:.5}
+</style></head><body>
+<canvas id="p"></canvas>
+<header class="header"><div class="hbar"><button id="btnBack" class="back" aria-label="Zurück"><span>←</span></button><div class="brand"><span class="logo"></span><span>LumaQuest – Habit ELO</span></div><div id="eloChip" class="badge-elo">ELO 1000</div></div></header>
+<main id="viewHome" class="wrap"><div class="panel"><h2>Start</h2><div class="grid">
+<a class="tile" id="goTrack" role="button" aria-label="Tracking öffnen"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="11" width="2.6" height="5.5" rx="1"/><rect x="11" y="8" width="2.6" height="8.5" rx="1"/><rect x="15" y="13" width="2.6" height="3.5" rx="1"/></svg></div><div class="lbl">Tracking</div></a>
+<a class="tile" id="goBoard" role="button" aria-label="Tagesabschlüsse öffnen"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M8 2.5v3M16 2.5v3M3.5 9h17"/><path d="M8.2 13h3.6M8.2 16h7.8"/></svg></div><div class="lbl">Tagesabschlüsse</div></a>
+<a class="tile" id="goTrophies" role="button" aria-label="Trophäen öffnen"><div class="ico"><svg viewBox="0 0 24 24"><path d="M6 5h12v2a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V5z"/><path d="M18 7h2a2 2 0 0 1-2 2M6 7H4a2 2 0 0 0 2 2"/><path d="M9 13h6M8 19h8M10 15v3M14 15v3"/></svg></div><div class="lbl">Trophäen</div></a>
+<a class="tile" id="goInfo" role="button" aria-label="Badge-Infos öffnen"><div class="ico">
+<!-- Sparkles icon to avoid "sun" confusion -->
+<svg viewBox="0 0 24 24"><path d="M12 3l1.6 3.8L18 8l-4.4 1.2L12 13l-1.6-3.8L6 8l4.4-1.2L12 3z"/><path d="M19 4l.8 1.9L22 6.6l-2.2.6L19 9l-.8-1.8L16 6.6l2.2-.7L19 4z"/><path d="M5 14l.8 1.9L8 17.6l-2.2.6L5 21l-.8-1.8L2 17.6l2.2-.7L5 14z"/></svg>
+</div><div class="lbl">Badge‑Infos</div></a>
+</div></div><div class="panel"><h2>Heute</h2><div id="todaySummary">–</div></div></main>
+<main id="viewTrack" class="wrap" hidden><div class="panel"><h2>Heutiges Tracking</h2><label>Zigaretten</label><select id="inCigs"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>12</option><option>15</option><option>20</option></select>
+<div style="height:8px"></div><div class="grid"><button class="btn" data-quick="radler">+ Radler (0.5 L · 2.5%)</button><button class="btn" data-quick="bier">+ Bier (0.5 L · 5%)</button><button class="btn" data-quick="wein">+ Wein (0.2 L · 12%)</button><button class="btn" data-quick="shot">+ Shot (0.02 L · 40%)</button></div>
+<div style="height:10px"></div><label>Custom: Menge (L)</label><input id="inVol" type="number" step="0.01" value="0.33"><label>% vol</label><input id="inPct" type="number" step="0.1" value="5"><label>Typ</label><select id="inType"><option>Bier</option><option>Wein</option><option>Radler</option><option>Hochprozentig</option></select>
+<div style="height:12px"></div><button id="btnAdd" class="btn">Getränk hinzufügen</button></div>
+<div class="panel"><h2>Heute · Getränke</h2><div id="drinkList" class="cb-list"></div><div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button id="btnSaveDay">Tagesabschluss</button><button id="btnClear" style="background:rgba(255,92,92,.14)">Alle löschen</button></div></div></main>
+<main id="viewBoard" class="wrap" hidden><div class="panel"><h2>Tagesabschlüsse (Control Board)</h2><div id="boardList" class="cb-list"></div></div></main>
+<main id="viewTrophies" class="wrap" hidden><div class="panel"><h2>Trophäen</h2><div id="trophyGrid" class="grid"></div><div style="height:6px"></div><small>Gesperrte Trophäen erscheinen als Schatten. Tippe, um Bedingungen zu sehen.</small></div></main>
+<main id="viewInfo" class="wrap" hidden><div class="panel"><h2>Badge-Regeln (Info)</h2><div style="display:grid;gap:12px">
+<div class="badge b-green">Zero Hero</div><small>0 Cigs & 0 Einheiten</small><div class="badge b-green">Strong Cut</div><small>≤2 Cigs & ≤1.0 Einheiten</small><div class="badge b-amber">Holding Line</div><small>≤3 Cigs & ≤2.5 Einheiten</small><div class="badge b-orange">Under Watch</div><small>≤5 Cigs & ≤3.5 Einheiten</small><div class="badge b-red">Steady 10</div><small>≤10 Cigs & ≤4.5 Einheiten</small><div class="badge b-red">Game Over</div><small>&gt;10 Cigs ODER &gt;4.5 Einheiten</small>
+</div></div></main>
+<footer class="footer"><div class="wrap"><div id="quote" class="mute">Weniger Rauch, mehr Raum.</div></div></footer>
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="mh"><div class="box"><div id="mh" class="mh">Tagesabschluss</div><div id="mb"></div><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap"><button id="mClose">Schließen</button></div></div></div>
+<script>
+/* particles */
+(function(){const c=document.getElementById('p'),x=c.getContext('2d');function r(){c.width=innerWidth;c.height=innerHeight}addEventListener('resize',r,{passive:true});r();const P=80,A=[];for(let i=0;i<P;i++)A.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,s:1+Math.random()*2});(function loop(){x.clearRect(0,0,c.width,c.height);x.fillStyle='rgba(170,130,255,.7)';for(const p of A){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;x.beginPath();x.arc(p.x,p.y,p.s,0,6.28);x.fill()}requestAnimationFrame(loop)})()})();
+/* state */
+const LS=(k,v)=>v===undefined?JSON.parse(localStorage.getItem(k)||'null'):(localStorage.setItem(k,JSON.stringify(v)),v);
+const todayKey=new Date().toISOString().slice(0,10);
+const state=LS('lq_state')||{elo:1000,baseline:{cigs:10,units:2.0},drinks:{},cigs:0,history:[]};
+const $=s=>document.querySelector(s);const show=id=>{for(const v of document.querySelectorAll('main.wrap'))v.hidden=true;$(id).hidden=false;/* back button only if not home */$('#btnBack').style.display=(id==='#viewHome')?'none':'grid'};const save=()=>LS('lq_state',state);
+/* header */
+$("#eloChip").textContent=`ELO ${state.elo}`;$("#btnBack").onclick=()=>show("#viewHome");$("#goTrack").onclick=()=>show("#viewTrack");$("#goBoard").onclick=()=>{renderBoard();show("#viewBoard")};$("#goTrophies").onclick=()=>{renderTrophies();show("#viewTrophies")};$("#goInfo").onclick=()=>show("#viewInfo");
+/* helpers */
+function grams(volL,pct){return volL*(pct/100)*789}const BADGES=[{key:'zero',label:'Zero Hero',class:'b-green',rule:'0 Cigs & 0 Einheiten',test:(c,u)=>c===0&&u===0},{key:'strong',label:'Strong Cut',class:'b-green',rule:'≤2 Cigs & ≤1.0 Einheiten',test:(c,u)=>c<=2&&u<=1.0},{key:'hold',label:'Holding Line',class:'b-amber',rule:'≤3 Cigs & ≤2.5 Einheiten',test:(c,u)=>c<=3&&u<=2.5},{key:'watch',label:'Under Watch',class:'b-orange',rule:'≤5 Cigs & ≤3.5 Einheiten',test:(c,u)=>c<=5&&u<=3.5},{key:'steady',label:'Steady 10',class:'b-red',rule:'≤10 Cigs & ≤4.5 Einheiten',test:(c,u)=>c<=10&&u<=4.5},{key:'over',label:'Game Over',class:'b-red',rule:'>10 Cigs ODER >4.5 Einheiten',test:(c,u)=>c>10||u>4.5},];
+const badgeFor=(c,u)=>BADGES.find(b=>b.test(c,u))||BADGES[BADGES.length-1];const badgeStyleFor=k=>{const b=BADGES.find(x=>x.key===k)||BADGES[BADGES.length-1];return {className:b.class,label:b.label,rule:b.rule}};
+function progressFrom(c,u){const bc=Math.max(1,state.baseline.cigs);const bu=Math.max(.1,state.baseline.units);const pc=1-Math.min(1,c/bc);const pu=1-Math.min(1,u/bu);return Math.round(100*(.6*pc+.4*pu))}
+function eloFrom(day){const bc=state.baseline.cigs,bu=state.baseline.units;const rc=1-Math.min(1,day.cigs/(bc||1));const ru=1-Math.min(1,day.units/(bu||.1));let d=Math.round(((.6*rc+.4*ru)-.5)*50);if(day.cigs===0&&day.units===0)d=30;return d}
+/* quick drinks */
+const quick={radler:{vol:.5,pct:2.5,type:'Radler'},bier:{vol:.5,pct:5,type:'Bier'},wein:{vol:.2,pct:12,type:'Wein'},shot:{vol:.02,pct:40,type:'Hochprozentig'}};
+for(const b of document.querySelectorAll('[data-quick]'))b.onclick=()=>{const q=quick[b.dataset.quick];addDrink(q.vol,q.pct,q.type)};
+/* inputs */
+$("#btnAdd").onclick=()=>addDrink(parseFloat($("#inVol").value||0),parseFloat($("#inPct").value||0),$("#inType").value);
+$("#inCigs").onchange=e=>{state.cigs=parseInt(e.target.value||0,10);renderToday();save()};
+$("#btnClear").onclick=()=>{state.drinks[todayKey]=[];renderToday();save()};
+$("#btnSaveDay").onclick=()=>{const day=computeToday();const eloDelta=eloFrom(day);state.elo+=eloDelta;state.history.push({...day,eloDelta,eloNow:state.elo});state.drinks[todayKey]=[];state.cigs=0;save();$("#eloChip").textContent=`ELO ${state.elo}`;renderToday();renderBoard();showSummary(day,eloDelta)};
+/* today calc/render */
+function addDrink(vol,pct,type){if(!state.drinks[todayKey])state.drinks[todayKey]=[];state.drinks[todayKey].push({vol,pct,type,g:grams(vol,pct)});renderToday();save()}
+function computeToday(){const list=state.drinks[todayKey]||[];const g=list.reduce((s,d)=>s+d.g,0);const units=g/10;const c=state.cigs|0;const badge=badgeFor(c,units);return {date:todayKey,shortDate:todayKey.slice(5),cigs:c,alcoholGrams:g,units,badgeKey:badge.key,badgeLabel:badge.label,progressPct:progressFrom(c,units)}}
+function renderToday(){const d=computeToday();$("#todaySummary").innerHTML=`Zigaretten: <b>${d.cigs}</b> · Alkohol: <b>${d.alcoholGrams.toFixed(1)} g</b> · Badge: <span class="badge ${badgeStyleFor(d.badgeKey).className}">${d.badgeLabel}</span>`;const list=(state.drinks[todayKey]||[]).slice().sort((a,b)=>a.type.localeCompare(b.type));const map=new Map();for(const it of list){const k=it.type+'|'+it.vol+'|'+it.pct;const cur=map.get(k)||{...it,count:0};cur.count++;cur.g+=it.g;map.set(k,cur)}$("#drinkList").innerHTML=[...map.values()].map(it=>`<div class="cb-row"><div class="cb-date">${it.type}</div><div class="cb-cigs">× ${it.count}</div><div class="cb-alc">${it.vol.toFixed(2)} L @ ${it.pct.toFixed(1)}%</div><div class="cb-elo">${it.g.toFixed(1)} g</div></div>`).join('')||'<small>Keine Getränke erfasst.</small>'}
+renderToday();
+/* board */
+function renderBoard(){const list=$("#boardList");const history=state.history.slice(-120);list.innerHTML=history.map(d=>{const pct=Math.max(0,Math.min(100,d.progressPct||0));const badge=badgeStyleFor(d.badgeKey);const eloClass=(d.eloDelta||0)>=0?'gain':'loss';const sign=(d.eloDelta||0)>=0?'+':'';return `<div class="cb-row"><div class="cb-date">${d.shortDate}</div><div class="cb-cigs">Zigaretten: ${d.cigs}</div><div class="cb-alc">Alkohol: ${(d.alcoholGrams||0).toFixed(1)} g</div><div class="cb-progress"><div class="cb-bar"><i style="width:${pct}%"></i></div><div class="cb-badge ${badge.className}">${badge.label}</div></div><div class="cb-elo ${eloClass}">${d.eloNow} <span>(${sign}${d.eloDelta})</span></div></div>`}).join('')||'<small>Noch keine Tagesabschlüsse.</small>'}
+/* trophies */
+const TROPHIES=[{id:'zero3',name:'Zero x3',rare:'RARE',rule:'3 Tage in Folge 0/0',unlocked:false},{id:'elo1100',name:'ELO 1100',rare:'COMMON',rule:'ELO ≥ 1100',unlocked:false},{id:'dry7',name:'Dry 7',rare:'RARE',rule:'7 Tage ohne Alkohol',unlocked:false},{id:'legend1300',name:'Legend 1300',rare:'MYTHIC',rule:'ELO ≥ 1300',unlocked:false},{id:'focus3',name:'Focus 3',rare:'RARE',rule:'3 Tage unter Badge „Holding Line“',unlocked:false}];
+function renderTrophies(){$("#trophyGrid").innerHTML=TROPHIES.map(t=>`<div class="tile" style="filter:${t.unlocked?'none':'grayscale(1) opacity(.6)'}"><div class="ico"><svg viewBox="0 0 24 24"><path d="M6 5h12v2a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V5z"/><path d="M18 7h2a2 2 0 0 1-2 2M6 7H4a2 2 0 0 0 2 2"/><path d="M9 13h6M8 19h8M10 15v3M14 15v3"/></svg></div><div class="lbl">${t.name} · <small>${t.rare}</small></div><small>${t.rule}</small></div>`).join('')}
+/* modal summary */
+const modal=$("#modal"),mBody=$("#mb");$("#mClose").onclick=()=>modal.classList.remove('active');
+function showSummary(day,eloDelta){const badge=badgeStyleFor(day.badgeKey);const bc=state.baseline?.cigs,bu=state.baseline?.units;const redC=(bc&&bc>0)?Math.max(0,Math.round((1-day.cigs/bc)*100)):null;const redU=(bu&&bu>0)?Math.max(0,Math.round((1-day.units/bu)*100)):null;const eloClass=eloDelta>=0?'eloPos':'eloNeg';const rows=[["Datum",day.date],["Zigaretten",day.cigs],["Alkohol (g)",day.alcoholGrams.toFixed(1)],["Einheiten",day.units.toFixed(2)],["Badge",`<span class="badge ${badge.className}">${badge.label}</span>`],["ΔELO",`<span class="${eloClass}">${eloDelta>=0?'+':''}${eloDelta}</span>`],["Verbesserung vs Ø",`${redC!=null?redC+'% weniger Cigs':'—'} · ${redU!=null?redU+'% weniger Einh.':'—'}`]];mBody.innerHTML=rows.map(([k,v])=>`<div class="srow"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');modal.classList.add('active')}
+/* quote */
+const QUOTES=["Weniger Rauch, mehr Raum.","Du brennst heller als jede Gewohnheit.","Kleine Schritte, großer Effekt.","Heute zählst du."];document.querySelector("#quote").textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+/* start with home and hide back button */
+show("#viewHome");
+</script></body></html>
